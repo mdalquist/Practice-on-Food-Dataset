@@ -1,4 +1,10 @@
-# Practice-on-Food-Dataset
+# A Data Science Approach to Low Calorie, High Protein, Tasty Foods
 
-This is a test. Hello future self
 
+## Introduction
+
+Food is a fundamental part of life. It provides us with the energy needed to sustain our bodily functions and carry out daily activities. Food also has a significant impact on our brains and mental health, as eating tasty food brings us joy and generally makes life worth living. However, just eating food that keeps us fed and happy isn't always the best choice. Eating healthy food is extremely important in our overall well-being, and eating healthy, tasty food should be what everyone strives to do with every meal. While there is more that goes into what makes a food healthy or not, I will be measuring the quality of the food in this study by CPP (calories per gram of protein) and the rating of the food based on surveys from food.com. Lower values of CPP will be healthier foods, as those values will indicate high protein, low calorie foods, which help lower fat and build muscle. 
+
+Research Question: Are the recipes with low CPPs generally better or worse tasting as a sample than the rest of the recipes in the database? Identify the 20 recipes with the lowest CPPs and view their ratings. 
+
+Dataset: There are two datasets I will be using, both from food.com(https://www.food.com/). The first is the recipes dataset, which contains recipes contributors of food.com have posted to the website (example(https://www.food.com/recipe/chickpea-and-fresh-tomato-toss-51631)). The second dataset contains reviews and ratings for the recipes in the first dataset. The recipes dataframe has 83782 rows and 12 columns, while the reviews dataframe has 731927 rows and 5 columns. These two dataframes will be joined by their 'id' columns. Other significant columns include the 'nutrition' column in the recipes dataframe, which contains the food's health information such as calories, fat, protein, and carbs, and the 'rating' column in the reviews dataframe, which will be used to assess the quality of each recipe.
