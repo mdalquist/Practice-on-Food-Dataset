@@ -14,7 +14,7 @@ Datasets: There are two datasets I will be using, both from [food.com](https://w
 
 ### Data and Cleaning
 
-The first step was simply loading the two dataframes.
+Loading in the two dataframes.
 
 Recipes:
 
@@ -31,17 +31,23 @@ Now that the full dataset is put together, and the average rating column is adde
 
 The next step is finding and removing null and unwanted values. The first issue is having 'inf' in the CPP column, which results when there the protein content is 0 (pandas sometimes handles dividing by 0 by displaying the result as infinity). These values are replaced by NaN. There is one row with a null value for the name, so I cannot identify what the food is. All rows with no rating are dropped; if there are no ratings, then we cannot measure taste in this study, so those values are not included. The row with no name was dropped with due to it also not having a rating, so any potential issue there was resolved. I suspected that all null values in the CPP column were because the protein content was zero, as this was either manually handled earlier or handled by pandas. This was true, as all rows with NaN in 'CPP' also were 0 in 'protein'. Most of the recipes with 0 protein were either spices or cleaning solutions, so it made sense to drop all these rows as well because they're not food. Here is the resulting clean dataframe:
 
-'| name                                 |     id |   calories |   protein |     CPP |   average rating |\n|:-------------------------------------|-------:|-----------:|----------:|--------:|-----------------:|\n| 1 brownies in the world    best ever | 333281 |      138.4 |       1.5 | 92.2667 |                4 |\n| 1 in canada chocolate chip cookies   | 453467 |      595.1 |       6.5 | 91.5538 |                5 |\n| 412 broccoli casserole               | 306168 |      194.8 |      11   | 17.7091 |                5 |\n| millionaire pound cake               | 286009 |      878.3 |      10   | 87.83   |                5 |\n| 2000 meatloaf                        | 475785 |      267   |      14.5 | 18.4138 |                5 |'
+'| name                                 |     id |   calories |   protein |     CPP |   average rating |
+|:-------------------------------------|-------:|-----------:|----------:|--------:|-----------------:|
+| 1 brownies in the world    best ever | 333281 |      138.4 |       1.5 | 92.2667 |                4 |
+| 1 in canada chocolate chip cookies   | 453467 |      595.1 |       6.5 | 91.5538 |                5 |
+| 412 broccoli casserole               | 306168 |      194.8 |      11   | 17.7091 |                5 |
+| millionaire pound cake               | 286009 |      878.3 |      10   | 87.83   |                5 |
+| 2000 meatloaf                        | 475785 |      267   |      14.5 | 18.4138 |                5 |'
 
 ### Univariate Analysis
 
 When doing any data analysis, looking at the distribution of variables can reveal crucial information about the data. Here are histograms for the two important variables in this study: CPP and Average Rating.
 
-<iframe src="assets/cpp_hist.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="cpp_hist.html" width=800 height=600 frameBorder=0></iframe>
 
 The CPP variable is heavily skewed to the right, with much of the data existing close to 0 and a large tail going off to the right. This version of the histogram is zoomed in for a better view, but the CPP gets all the way out to over 5000 for one recipe. Also, there are 26 recipes with a CPP of 5 or less, which will be the targets of finding the 20 recipes with the lowest CPP. There are also a significant amount of recipes with 10 or lower CPP, which will be the 'healthy' foods used to compare to the rest of the sample for determining if the healthy recipes are better or worse tasting than the others.
 
-<iframe src="assets/rating_hist.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="rating_hist.html" width=800 height=600 frameBorder=0></iframe>
 
 The ratings variable is also skewed, this time to the left. Much of the data is bunched towards the higher rankings, and the majority of the rankings are 4 or higher. The people seem to like the recipes posted on food.com
 
@@ -49,7 +55,7 @@ The ratings variable is also skewed, this time to the left. Much of the data is 
 
 While our research question is geared towards the hypothesis test that will be conducted at the end of the study, the relationship between our two main variables, CPP and Average Rating, should still be investigated
 
-<iframe src="assets/cpp_rating_scatter.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="cpp_rating_scatter.html" width=800 height=600 frameBorder=0></iframe>
 
 The frequency of the average ratings at whole numbers makes the plot a bit messy, but there doesn't seem to be a strong relationship between the two variables. The low CPP foods are spread out among all the ratings. However, most of the high CPP foods seem to be rated higher, likely because they are sugary and fatty foods or desert foods that people tend to like more.
 
@@ -82,13 +88,13 @@ In the merged dataframe, there are only three columns with missing values: 'desc
 
 After some investigation into the other missing columns, it seems that the date that the post was submitted could have something to do with description missingness, as the missing values seem to have earlier post dates. Perhaps the description feature wasn't as popularly used until later on. Similarly with the missingness for reviews, the null values in this column seem to have later dates. A possible explanation for this observation is that the newer posts have been tried less freqently, and therefore people have not had as many chances to review them. The missingness of these columns will be assessed through permutation tests. These tests were conducted by finding the average year of the missing description posts and the missing reviews, and comparing those means to the means of 1000 random resamples of the same size from the original data. The null distribution and observed values of the tests are plotted below:
 
-<iframe src="assets/desc_ndist.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="desc_ndist.html" width=800 height=600 frameBorder=0></iframe>
 
-<iframe src="assets/rev_ndist.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="rev_ndist.html" width=800 height=600 frameBorder=0></iframe>
 
 Another possibility for explanation of a missing review is the time it takes to prepare the food. Perhaps cooks spending more time making the food have less time to leave a review on the website, and are less likely to leave a review. The same test as above was ran again for the 'minutes' column containing the time it takes to prepare the recipe.
 
-<iframe src="assets/rev_min_ndist.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="rev_min_ndist.html" width=800 height=600 frameBorder=0></iframe>
 
 Descripton - missing at random - based on the missingness test conducted above, the null hypothesis that the 'description' column did not have missing values dependent on the 'submitted' column was rejected, giving evidence that the missing values in 'description' are MAR dependent on at least the 'submitted' column. The p-value of the test was 0.002 which is significant at the 0.01 level. 
 
@@ -104,6 +110,6 @@ Alternative Hypothesis: There is a difference in rating between recipes in the h
 
 In order to carry out this test, I will first isolate the recipes with a CPP of 10 or under and calcluate the mean average rating. Then, I will generate the null distribution by taking 1000 resamples of the same size and calculate the mean average rating for each. The result will be determined by the p-value of the observed statistic. Here is the resulting null distribution with the observed statistic plotted on it:
 
-<iframe src="assets/null_dist.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="null_dist.html" width=800 height=600 frameBorder=0></iframe>
 
 Result: Fail to reject the null hypothesis that there is a difference in the ratings for healthy recipes versus the rest of the population of recipes. The p-value came out to 0.102, which is not significant enough to give evidence the sample of recipes with CPP 10 or under have significantly higher or lower ratings that other groups of recipes.
