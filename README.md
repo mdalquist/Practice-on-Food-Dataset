@@ -75,11 +75,34 @@ To assess missingness in the data, I will be looking at the original dataframe a
 
 ### NMAR Analysis
 
-
+In the merged dataframe, there are only three columns with missing values: 'description' - the description of the recipe by the contributior, 'review' - the review of the recipe by a commenter, and 'average rating'. The one column I believe is NMAR is average rating. Even though it was part of the design to change 0 ratings to NaN, the presence of non-reviews make the column NMAR because the reviewers chose not to give a rating, and therefore the data is missing due to the data itself, not other columns. More information about the commenters who place reviews on food.com, along with the existing data of date and time of the reivew, could lead the data to being MAR, as more information could explain why the data is missing.
 
 ### Missingness Dependency
 
+After some investigation into the other missing columns, it seems that the date that the post was submitted could have something to do with description missingness, as the missing values seem to have earlier post dates. Perhaps the description feature wasn't as popularly used until later on. Similarly with the missingness for reviews, the null values in this column seem to have later dates. A possible explanation for this observation is that the newer posts have been tried less freqently, and therefore people have not had as many chances to review them. The missingness of these columns will be assessed through permutation tests. These tests were conducted by finding the average year of the missing description posts and the missing reviews, and comparing those means to the means of 1000 random resamples of the same size from the original data. The null distribution and observed values of the tests are plotted below:
 
+show desc_ndist
+
+show rev_ndist
+
+Another possibility for explanation of a missing review is the time it takes to prepare the food. Perhaps cooks spending more time making the food have less time to leave a review on the website, and are less likely to leave a review. The same test as above was ran again for the 'minutes' column containing the time it takes to prepare the recipe.
+
+show rev_min_ndist
+
+Descripton - missing at random - based on the missingness test conducted above, the null hypothesis that the 'description' column did not have missing values dependent on the 'submitted' column was rejected, giving evidence that the missing values in 'description' are MAR dependent on at least the 'submitted' column. The p-value of the test was 0.002 which is significant at the 0.01 level. 
+
+Review - missing at random - the null hypothesis for this missingness test was also rejected, there is evidence that the missing values in the'review' column are dependent on the 'date' column. The p-value of the test was 0. The test was repeated for dependency on the 'minutes' column, and the result was failing to reject the null hypothesis (p-value: 0.103) - no evidence for dependency.
 
 ## Hypothesis Testing
 
+Lastly, I will perform a Hypothesis test to see if there is any difference in ratings between healthy foods and other foods. The "healthy" foods will be all recipes that have a CPP of 10 or under. I chose 10 because when I am deciding what foods to make and eat, I usually use the ratio of 10 calories for every gram of protein to ensure I have a meal with enough protein and not too many calories. 
+
+Null Hypothesis: There is no difference in rating between recipes in the healthy group and the overall population of recipes in the dataset, they are drawn from the same distribution.
+
+Alternative Hypothesis: There is a difference in rating between recipes in the healthy group and the overall population of recipes.
+
+In order to carry out this test, I will first isolate the recipes with a CPP of 10 or under and calcluate the mean average rating. Then, I will generate the null distribution by taking 1000 resamples of the same size and calculate the mean average rating for each. The result will be determined by the p-value of the observed statistic. Here is the resulting null distribution with the observed statistic plotted on it:
+
+show null_dist
+
+Result: Fail to reject the null hypothesis that there is a difference in the ratings for healthy recipes versus the rest of the population of recipes. The p-value came out to 0.102, which is not significant enough to give evidence the sample of recipes with CPP 10 or under have significantly higher or lower ratings that other groups of recipes.
